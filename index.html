@@ -1,0 +1,97 @@
+<h1>CONTROLE DE ESTOQUE</h1>
+
+<input type="text" placeholder="Digite o nome do produto" id="produto">
+<input type="number" placeholder="Digite a quantidade" id="quantidade">
+
+<button onclick="cadastrar()">Cadastrar</button>
+<button onclick="visualizar()">Visualizar</button>
+
+<div id="lista"></div>
+
+<script>
+
+let produtos = JSON.parse(localStorage.getItem("produtos")) || []
+
+function cadastrar(){
+
+    let produto = document.getElementById("produto").value
+    let quantidade = document.getElementById("quantidade").value
+
+    let novoProduto = {
+        produto,
+        quantidade
+    }
+
+    let existe = false
+
+    produtos.forEach((item)=>{
+        if(produto == item.produto){
+            existe = true
+        }
+    })
+
+    if(existe){
+        alert("Produto já cadastrado")
+    }else{
+        produtos.push(novoProduto)
+        localStorage.setItem("produtos", JSON.stringify(produtos))
+        visualizar()
+    }
+
+}
+
+function visualizar(){
+
+    let lista = document.getElementById("lista")
+
+    lista.innerHTML = ""
+
+    produtos.forEach((item,i)=>{
+
+        lista.innerHTML += `
+        Produto: ${item.produto}<br>
+        Quantidade: ${item.quantidade}<br>
+
+        <button onclick="editar(${i})">Editar</button>
+        <button onclick="deletar(${i})">Excluir</button>
+
+        <br><br>
+        `
+
+    })
+
+}
+
+function editar(i){
+
+    let novoProduto = prompt("Novo produto", produtos[i].produto)
+    let novaQuantidade = prompt("Nova quantidade", produtos[i].quantidade)
+
+    if(novoProduto){
+
+        produtos[i].produto = novoProduto
+        produtos[i].quantidade = novaQuantidade
+
+        visualizar()
+
+        localStorage.setItem("produtos", JSON.stringify(produtos))
+
+    }
+
+}
+
+function deletar(i){
+
+    alert("Produto removido!")
+
+    produtos.splice(i,1)
+
+    visualizar()
+
+    localStorage.setItem("produtos", JSON.stringify(produtos))
+
+}
+
+visualizar()
+
+</script>
